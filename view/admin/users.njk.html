@@ -1,0 +1,116 @@
+{% extends "admin/layout.njk.html" %}
+
+{% block title %}
+  manager user
+{% endblock %}
+
+{% block content %}
+<h1>This is Page Manager User</h1>
+<div class="col-md-10 mx-auto mt-5">
+<table class="table">
+  <thead>
+      <tr>
+          <th>Id</th>
+          <th>Fullname</th>
+          <th>Address</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Username</th>
+          <th colspan="2" class="text-center">Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      {% for item in users %}
+      <tr id="row{{ item.id }}">
+        <td>{{ item.id }}</td>
+        <td>{{ item.fullname }}</td>
+        <td>{{ item.address }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.role }}</td>
+        <td>{{ item.username }}</td>
+        <td with="5%">
+        {% if item.role == 'user'%}
+        <button class="btn btn-info btnappoint" id="{{ item.id }}">appoint is admin</button>
+        {% endif %}
+        {% if item.role == 'admin'%}
+        <button class="btn btn-info demotiont" id="{{ item.id }}">demotiont is user</button>
+        {% endif %}
+        </td>
+        <td>
+         {% if item.role !== 'super admin'%}
+          <button class="btn btn-danger btnDelete" id="{{ item.id }}">Delete</button>
+        {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
+{% block bottom %}
+<script type="text/javascript">
+    $(function () {
+        $('.btnDelete').click(function() {
+                let click = $(this);
+                let id = click.attr( "id" );
+                let answer = confirm('do  you want delete');
+            if (answer) {
+                $.ajax({
+                        url: "/admin/deleteuser",
+                        data: { id:id },
+                        type: 'POST',
+                        success: function(result) {
+                            if (result) {
+                            alert("success");
+                            $('#row'+id).hide();
+                            }else{
+                            alert('fail');
+                            }
+                        }
+                });
+            }
+        });
+
+        $('.btnappoint').click(function() {
+            let click = $(this);
+            let id = click.attr( "id" );
+            
+                $.ajax({
+                        url: "/admin/appointuser",
+                        data: { id:id },
+                        type: 'POST',
+                        success: function(result){
+                            if (result) {
+                            alert("appoint success");
+                            window.location.reload(true)
+                            }else{
+                            alert('fail');
+                            }
+                    
+                        }
+                });
+            
+        });
+
+        $('.demotiont').click(function() {
+            let click = $(this);
+            let id = click.attr( "id" );
+            $.ajax({
+                    url: "/admin/demotiont",
+                    data: { id:id },
+                    type: 'POST',
+                    success: function(result){
+                        if (result) {
+                        alert("demotiont success");
+                        window.location.reload(true)
+                        }else{
+                        alert('fail');
+                        }
+                
+                    }
+            });
+        });
+})
+</script>
+
+{% endblock %}

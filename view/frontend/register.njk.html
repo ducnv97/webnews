@@ -1,0 +1,51 @@
+{% extends "frontend/base.njk.html" %}
+{% block title %} Register for kenh69.vn {% endblock %}
+
+{% block body %}
+<body>
+    <!-- Default form register -->
+
+<div class="col-md-8 mx-auto mt-5">
+        <form action="/handleregister" method="POST" class="text-center border border-light p-5" >
+
+                <p class="h5 mb-5">Register</p>
+                {% if checkEmpty %}
+                    <h4 class="text-danger"> {{checkEmpty}} </h4>
+                {% elif success %}
+                    <h4 class="text-success">{{ success }}</h4>
+                {% endif %}
+
+                <input type="text" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="Fullname" name="fullname" id="fullname" required>
+
+                <input type="text" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="Address" name="address" id="address" required>
+            
+                <!-- E-mail -->
+                <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail" name="email" id="email" required>
+
+                <input type="text" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="Username" name="username" id="username" required>
+            
+                <!-- Password -->
+                <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password"  name="password" id="password" maxlength="16" required>
+                <!-- <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                    At least 8 characters and 1 digit
+                </small> -->
+            
+                <!-- <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
+                    Optional - for two step authentication
+                </small> -->
+            
+                <!-- Newsletter --> 
+            
+                <!-- Sign up button -->
+                <button class="btn btn-info my-4 btn-block" type="submit">Sign up</button>
+            
+                <!-- Social register -->
+            </form>
+            <div class=" float-right">
+                    <a href="/"> Back to home page</a>
+            </div>
+            
+</div>
+    <!-- Default form register -->
+</body>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "admin/layout.njk.html" %}
+
+{% block title %}
+  Manager post
+{% endblock %}
+
+{% block content %}
+<h1>This is Post Page Manager</h1>
+<div class="col-md-10 mx-auto mt-5">
+    <div class="row tex">
+        <div class="col-md-8 float left">
+          <a href="/addpost" class="btn btn-primary"> Add Post + </a>
+        </div>
+      </div>
+<table class="table">
+  <thead>
+      <tr>
+          <th>Id</th>
+          <th>Title Post</th>
+          <th>Category</th>
+          <th>View</th>
+          <th>Author</th>
+          <th>Date created</th>
+          <th colspan="2" width="3%" class="text-center">Action</th>
+      </tr>
+  </thead>
+  <tbody id="test">
+      {% for item in posts %}
+      <tr id="row{{ item.id }}">
+        <td>{{ item.id }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.view }}</td>
+        <td>{{ item.user}}</td>
+        <td>{{ item.created_at }}</td>
+        <td>
+          <a href="/admin/editpost?id={{ item.id }}" class="btn btn-info" >Edit</a>
+        </td>
+        <td>
+          <button class="btn btn-danger btnDelete" id="{{ item.id }}">Delete</button>
+        </td>
+      </tr>
+      {% endfor %}
+  </tbody>
+
+</table>
+<div class="row text-center">
+  <input type="button" class="btn btn-primary mx-auto" value="Load more" id="loadmore">
+</div>
+</div>
+{% endblock %}
+{% block bottom %}
+<script type="text/javascript">
+$(function (){
+      
+      let currentPage = 1;
+      let html = ''
+      $('#loadmore').on('click',function() {
+        currentPage ++;
+        $.ajax({
+						url: "/admin/loadmore",
+            data: { page:currentPage },
+            
+            type: 'POST',
+						success: function(result){
+              let a = result.posts[0].created_at;
+              if (result.posts.length <= result.limit ) {
+                for (let i = 0; i < result.posts.length; i++) {
+                  html = '<tr id="row'+ result.posts[i].id +'">'+
+                          '<td>'+ result.posts[i].id +'</td>'+
+                          '<td>'+ result.posts[i].title +'</td>'+
+                          '<td>'+ result.posts[i].category +'</td>'+
+                          '<td>'+ result.posts[i].view +'</td>'+
+                          '<td>'+ result.posts[i].user +'</td>'+
+                          '<td>'+ result.posts[i].created_at+ '</td>'+
+                          '<td>'+
+                            '<a href="/admin/editpost?id='+ result.posts[i].id + '" class="btn btn-info" >Edit</a>'+
+                          '</td>'+
+                          '<td>'+
+                            '<button class="btn btn-danger btnDelete" id="'+ result.posts[i].id +'">Delete</button>'+
+                         '</td>'+
+                        '</tr>'
+                  $('tbody').append(html);
+                }
+                $('#loadmore').hide();
+              }else{
+                for (let i = 0; i < result.posts.length -1; i++) {
+                  html = '<tr id="row'+ result.posts[i].id +'">'+
+                          '<td>'+ result.posts[i].id +'</td>'+
+                          '<td>'+ result.posts[i].title +'</td>'+
+                          '<td>'+ result.posts[i].category +'</td>'+
+                          '<td>'+ result.posts[i].view +'</td>'+
+                          '<td>'+ result.posts[i].user +'</td>'+
+                          '<td>'+ result.posts[i].created_at + '</td>'+
+                          
+                          '<td>'+
+                            '<a href="/admin/editpost?id='+ result.posts[i].id + '" class="btn btn-info" >Edit</a>'+
+                          '</td>'+
+                          '<td>'+
+                            '<button class="btn btn-danger btnDelete" id="'+ result.posts[i].id +'">Delete</button>'+
+                         '</td>'+
+                        '</tr>'
+                  $('tbody').append(html);                  
+                }
+              }
+              
+						}
+					});
+      });
+
+      $(document).on('click', '.btnDelete', function() {
+        let answer = confirm('do  you want delete');
+        if (answer) {
+            let click = $(this);
+            let idPost = click.attr( "id" );
+					$.ajax({
+						url: "/admin/deletepost",
+						data: { id:idPost },
+            type: 'POST',
+						success: function(result){ỗi
+              if (result) {
+                alert("success");
+                $('#row'+idPost).hide();
+              }else{
+                alert('fail');
+              }
+              
+						}
+					});
+        }
+     
+      });
+  })
+</script>
+{% endblock %}
